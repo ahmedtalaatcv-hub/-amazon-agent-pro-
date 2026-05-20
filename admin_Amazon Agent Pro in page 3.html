@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+<meta charset="UTF-8">
+<title>🔥Amazon Agent Pro</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+
+/* ===== GLOBAL ===== */
+body{
+margin:0;
+font-family:Cairo,Tahoma;
+display:flex;
+flex-direction: row-reverse; 
+height:100vh;
+background:#0f172a;
+overflow:hidden;
+color:white;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+width:140px;
+background:#020617;
+padding:10px; 
+overflow:auto;
+box-shadow:0 0 25px #000;
+animation:slideIn .6s ease;
+}
+
+@keyframes slideIn{
+from{transform:translateX(80px);opacity:0}
+to{transform:translateX(0);opacity:1}
+}
+
+.sidebar.collapsed{
+width:70px; 
+padding:10px 5px;
+}
+
+.sidebar.collapsed button{
+font-size:0;
+justify-content:center;
+}
+
+.sidebar.collapsed button i{
+font-size:8px; /* 👈 أصغر */
+}
+
+
+
+.sidebar h2{
+color:#38bdf8;
+margin-bottom:20px;
+}
+
+/* buttons */
+.sidebar button{
+width:100%;
+background:#111827;
+border:none;
+color:white;
+padding:13px;
+margin-bottom:8px;
+border-radius:12px;
+cursor:pointer;
+transition:.3s;
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.sidebar button:hover{
+background:#2563eb;
+transform:translateX(-6px);
+box-shadow:0 0 15px #2563eb88;
+}
+
+/* add btn */
+.add{
+background:#22c55e !important;
+}
+
+/* ===== MAIN ===== */
+.main{
+flex:1;
+position:relative;
+background:#020617;
+overflow:hidden;
+}
+
+iframe{
+width:100%;
+height:100%;
+border:none;
+animation:fade .4s ease;
+}
+
+@keyframes fade{
+from{opacity:0;transform:scale(.97)}
+to{opacity:1;transform:scale(1)}
+}
+
+/* ===== MODAL ===== */
+.modal{
+position:fixed;
+inset:0;
+background:#000a;
+display:none;
+justify-content:center;
+align-items:center;
+animation:fade .3s;
+}
+
+.box{
+background:#020617;
+padding:20px;
+width:420px;
+border-radius:14px;
+box-shadow:0 0 40px #000;
+}
+
+input,textarea{
+width:100%;
+margin:7px 0;
+padding:10px;
+border:none;
+border-radius:8px;
+background:#111827;
+color:white;
+}
+
+.save{
+background:#2563eb;
+border:none;
+padding:12px;
+width:100%;
+color:white;
+border-radius:10px;
+cursor:pointer;
+transition:.3s;
+}
+
+.save:hover{
+background:#1d4ed8;
+}
+
+/* loader */
+.loader{
+position:absolute;
+inset:0;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:22px;
+color:#38bdf8;
+animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+50%{opacity:.3}
+}
+/* SHAKE EFFECT */
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-3px)}
+50%{transform:translateX(3px)}
+75%{transform:translateX(-3px)}
+100%{transform:translateX(0)}
+}
+
+.shake{
+animation:shake .3s infinite;
+}
+
+/* MENU POP */
+@keyframes pop{
+0%{
+transform:scale(.3);
+opacity:0;
+}
+100%{
+transform:scale(1);
+opacity:1;
+}
+}
+
+.menuShow{
+animation:pop .25s ease;
+}
+
+/* PIN WINDOW */
+.pinModal{
+position:fixed;
+inset:0;
+background:#000a;
+backdrop-filter:blur(6px);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:99999;
+}
+
+.pinBox{
+background:#020617;
+padding:25px;
+border-radius:16px;
+width:300px;
+text-align:center;
+animation:pop .3s ease;
+box-shadow:0 0 40px #000;
+}
+
+.pinBox input{
+width:100%;
+padding:12px;
+margin:15px 0;
+border:none;
+border-radius:10px;
+background:#111827;
+color:white;
+text-align:center;
+font-size:18px;
+letter-spacing:4px;
+}
+
+.pinBox button{
+width:100%;
+padding:12px;
+background:#2563eb;
+border:none;
+border-radius:10px;
+color:white;
+cursor:pointer;
+}
+
+.pinError{
+color:#ef4444;
+font-size:13px;
+height:18px;
+}
+
+/* error shake */
+@keyframes errorShake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-6px)}
+50%{transform:translateX(6px)}
+75%{transform:translateX(-6px)}
+100%{transform:translateX(0)}
+}
+
+.error{
+animation:errorShake .3s;
+}
+.activeSection{
+background:#2563eb !important;
+box-shadow:0 0 20px #2563ebaa;
+transform:translateX(-6px);
+}
+/* CLOSE BUTTON */
+.closeBtn{
+position:absolute;
+top:10px;
+left:10px;
+width:28px;
+height:28px;
+border-radius:50%;
+background:#ef4444;
+color:white;
+border:none;
+cursor:pointer;
+font-weight:bold;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:.3s;
+}
+
+.closeBtn:hover{
+background:#dc2626;
+transform:scale(1.1);
+box-shadow:0 0 10px #ef4444aa;
+}
+/* ===== CONTEXT MENU PRO ===== */
+
+#contextMenu{
+position:fixed;
+display:none;
+z-index:9999;
+animation:menuIn .25s ease;
+}
+
+/* الحاوية */
+.menuBox{
+display:flex;
+gap:6px;
+background:#020617dd;
+backdrop-filter:blur(10px);
+padding:4px;
+border-radius:10px;
+box-shadow:0 8px 25px #000000aa;
+}
+
+/* الأزرار */
+.menuItem{
+flex:1;
+padding:8px 10px;
+font-size:13px;
+border-radius:8px;
+color:white;
+cursor:pointer;
+text-align:center;
+transition:.25s;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+opacity:.95;
+}
+
+/* تأثير ناعم */
+.menuItem:hover{
+transform:translateY(-1px);
+opacity:1;
+}
+
+/* تعديل */
+.menuItem.edit{
+background:#22c55e;
+box-shadow:0 0 8px #22c55e55 inset;
+}
+.menuItem.edit:hover{
+background:#15803d;
+}
+
+/* حذف */
+.menuItem.delete{
+background:#ef4444;
+box-shadow:0 0 8px #ef444455 inset;
+}
+.menuItem.delete:hover{
+background:#b91c1c;
+}
+
+/* دخول */
+@keyframes menuIn{
+from{
+opacity:0;
+transform:translateY(10px) scale(.9);
+}
+to{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+}
+
+/* خروج ناعم */
+.menuHide{
+animation:menuOut .2s ease forwards;
+}
+
+@keyframes menuOut{
+to{
+opacity:0;
+transform:translateY(8px) scale(.9);
+}
+}
+
+/* ===== SMART TOAST ===== */
+
+#toast{
+position:fixed;
+bottom:25px;
+left:50%;
+transform:translateX(-50%) scale(.9);
+background:#020617ee;
+color:white;
+padding:12px 18px;
+border-radius:14px;
+font-size:14px;
+opacity:0;
+pointer-events:none;
+transition:.35s;
+box-shadow:0 10px 30px #000;
+z-index:99999;
+display:flex;
+align-items:center;
+gap:8px;
+min-width:180px;
+justify-content:center;
+}
+
+/* ظهور */
+#toast.show{
+opacity:1;
+transform:translateX(-50%) scale(1);
+animation:toastShake .35s;
+}
+
+/* اهتزاز */
+@keyframes toastShake{
+0%{transform:translateX(-50%) translateX(0)}
+25%{transform:translateX(-50%) translateX(-4px)}
+50%{transform:translateX(-50%) translateX(4px)}
+75%{transform:translateX(-50%) translateX(-3px)}
+100%{transform:translateX(-50%) translateX(0)}
+}
+
+/* ألوان */
+.toast-success{
+background:#16a34a;
+}
+
+.toast-edit{
+background:#2563eb;
+}
+
+.toast-delete{
+background:#dc2626;
+}
+
+.logoBox{
+text-align:center;
+margin-bottom:15px;
+padding:0;
+}
+
+#appLogo{
+width:100%;
+max-width:230px;
+height:auto;
+object-fit:contain;
+border-radius:12px;
+}
+
+#appLogo:hover{
+transform:scale(1.05);
+filter: drop-shadow(0 0 35px #2563eb);
+}
+.sidebar button i:last-child{
+font-size:12px;
+opacity:.7;
+margin-right:6px;
+}
+.linkArrow{
+font-size:12px;
+opacity:.7;
+margin-right:6px;
+}
+
+.menuToggle{
+width:100%;
+background:#111827;
+border:none;
+color:white;
+padding:12px;
+margin:10px 0;
+border-radius:12px;
+cursor:pointer;
+font-size:18px;
+transition:.3s;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* Hover */
+.menuToggle:hover{
+background:#2563eb;
+transform:scale(1.05);
+}
+
+/* 🔥 لما القائمة تتقفل */
+.sidebar.collapsed .menuToggle{
+background:#2563eb; /* 👈 يفضل أزرق */
+box-shadow:none;    /* 👈 بدون إضاءة */
+animation:none;     /* 👈 بدون حركة */
+}
+/* أنيميشن لفت الانتباه */
+@keyframes pulseBtn{
+0%{transform:scale(1)}
+50%{transform:scale(1.1)}
+100%{transform:scale(1)}
+}
+
+.adminTopBar{
+position:fixed;
+top:0;
+right:0;
+left:0;
+height:45px;
+background:linear-gradient(90deg,#020617,#111827,#1e293b);
+border-bottom:1px solid #2563eb;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+font-weight:bold;
+letter-spacing:1px;
+z-index:999999;
+box-shadow:0 4px 20px #00000066;
+}
+
+body{
+padding-top:45px;
+}
+
+.floatingAdminIcon{
+position:fixed;
+top:50%;
+transform:translateY(-50%);
+right:20px;
+width:52px;
+height:52px;
+
+border-radius:16px;
+
+background:linear-gradient(
+145deg,
+#1e293b,
+#0f172a
+);
+
+border:1px solid #2563eb;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:22px;
+color:#60a5fa;
+
+z-index:99999;
+
+box-shadow:
+0 4px 20px #00000066;
+
+backdrop-filter:blur(8px);
+
+transition:.3s;
+}
+
+/* Hover */
+.floatingAdminIcon:hover{
+transform:translateY(-3px) scale(1.05);
+
+box-shadow:
+0 8px 25px #2563eb33;
+}
+</style>
+</head>
+<div id="contextMenu">
+
+<div class="menuBox">
+
+<div onclick="editSection()" class="menuItem edit">
+✏ تعديل
+</div>
+
+<div onclick="deleteSection()" class="menuItem delete">
+🗑 حذف
+</div>
+
+</div>
+
+</div>
+
+<div id="toast"></div>
+<div class="floatingAdminIcon">
+    <i class="fa-solid fa-crown"></i>
+</div>
+<body>
+<div class="adminTopBar">
+    <i class="fa-solid fa-shield-halved"></i>
+    ADMIN CONTROL PANEL
+</div>
+<div class="sidebar">
+
+    <div class="logoBox">
+        <img id="appLogo" />
+    </div>
+
+    <button class="menuToggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+     <div id="onlineBox"
+style="
+background:#111827;
+padding:10px;
+border-radius:12px;
+margin-bottom:12px;
+text-align:center;
+font-size:14px;
+color:#38bdf8;
+font-weight:bold;
+">
+👥 Online: <span id="onlineCount">0</span>
+
+<br>
+
+🔥 Peak: <span id="peakCount">0</span>
+</div>
+    <div id="sections"></div>
+
+    <button class="add" onclick="requestAddPin()">
+        <i class="fa-solid fa-plus"></i>
+        Add a section
+    </button>
+
+</div>
+
+<div class="main" id="viewer">
+<div class="loader">Loading...</div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal" id="modal">
+<div class="box" style="position:relative;">
+
+<button class="closeBtn"
+onclick="closeModal()">✕</button>
+
+<h3>إضافة قسم</h3>
+
+<input id="name" placeholder="اسم القسم">
+
+<input id="icon" placeholder="fa-headset">
+
+<textarea id="html"
+rows="7"
+placeholder="ضع كود HTML كامل"></textarea>
+
+<button class="save" onclick="saveSection()">حفظ</button>
+
+</div>
+</div>
+
+
+<!-- FIREBASE (works with file:///) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+let pendingEvent=null;
+let pendingDoc=null;
+let selectedId=null
+let editingId = null;
+let holdTimer=null;
+let selectedButton = null;
+let dragEnabled = false;
+let isDragging = false;
+let pinAction = null;
+let sectionFrames = {};
+
+firebase.initializeApp({
+apiKey:"AIzaSyDXQf2fniazQqh6I6uJeJDcTyQcJteKRlA",
+authDomain:"index-ecee4.firebaseapp.com",
+projectId:"index-ecee4"
+});
+
+const db=firebase.firestore();
+const rtdb = firebase.database();
+/* تحميل الشعار من قاعدة البيانات */
+
+db.collection("system")
+.doc("branding")
+.onSnapshot(doc => {
+
+if(!doc.exists) return;
+
+const data = doc.data();
+
+if(data.logo){
+document.getElementById("appLogo").src = data.logo;
+}
+
+});
+const sectionsDiv=document.getElementById("sections");
+const viewer=document.getElementById("viewer");
+const contextMenu=document.getElementById("contextMenu");
+
+/* OPEN ADD */
+function openAdd(){
+
+typeModal.style.display="flex";
+
+}
+
+/* SAVE */
+async function saveSection(){
+
+const name=document.getElementById("name").value.trim();
+const icon=document.getElementById("icon").value.trim();
+const html=document.getElementById("html").value.trim();
+
+if(!name||!html){
+alert("املأ البيانات");
+return;
+}
+
+let isEdit = false;
+
+if(editingId){
+
+await db.collection("sections")
+.doc(editingId)
+.update({
+name,
+icon:icon||"fa-folder",
+html
+});
+
+isEdit = true;
+editingId = null;
+
+}else{
+
+const snap = await db.collection("sections").get();
+
+let maxOrder = 0;
+
+snap.forEach(d=>{
+const o = d.data().order || 0;
+if(o >= maxOrder) maxOrder = o + 1;
+});
+
+await db.collection("sections")
+.add({
+name,
+icon:icon||"fa-folder",
+html,
+created:Date.now(),
+order:maxOrder
+});
+
+}
+
+/* تنظيف الحقول بعد الحفظ */
+document.getElementById("name").value="";
+document.getElementById("icon").value="";
+document.getElementById("html").value="";
+
+modal.style.display="none";
+
+showToast(
+isEdit ?
+"✏️ تم التعديل بنجاح" :
+"✅ تم الحفظ بنجاح",
+isEdit ? "edit" : "success"
+);
+
+}
+
+/* LOAD DATA */
+db.collection("sections")
+.orderBy("order")
+.onSnapshot(snapshot=>{
+
+sectionsDiv.innerHTML="";
+
+snapshot.forEach(doc=>{
+
+const data=doc.data();
+if(!data.name||!data.html) return;
+
+const btn=document.createElement("button");
+btn.setAttribute("data-id",doc.id);
+
+let label = `<i class="fa-solid ${data.icon}"></i> ${data.name}`;
+
+if(data.html && data.html.startsWith("LINK:")){
+label += ` <i class="fa-solid fa-up-right-from-square linkArrow"></i>`;
+}
+
+btn.innerHTML = label;
+
+/* OPEN */
+
+/* LONG PRESS */
+/* TRIPLE CLICK */
+
+let clickCount = 0;
+let clickTimer = null;
+
+btn.addEventListener("click",(e)=>{
+
+clickCount++;
+if(clickCount === 1){
+
+clickTimer = setTimeout(()=>{
+
+if(isDragging) return;
+
+/* إزالة التحديد القديم */
+if(selectedButton){
+selectedButton.classList.remove("activeSection");
+}
+
+btn.classList.add("activeSection");
+selectedButton = btn;
+
+const id = doc.id;
+
+/* إزالة اللودر */
+const loader = viewer.querySelector(".loader");
+if(loader) loader.remove();
+
+/* اخفاء الصفحات */
+Object.values(sectionFrames).forEach(frame=>{
+frame.style.display = "none";
+});
+
+/* لو الصفحة موجودة */
+if(sectionFrames[id]){
+sectionFrames[id].style.display = "block";
+clickCount = 0;
+return;
+}
+
+const frame = document.createElement("iframe");
+
+/* هل فيه نسخة محفوظة */
+const saved = localStorage.getItem("section_" + id);
+
+const content = saved ? saved : data.html;
+
+/* لو رابط */
+if(content.startsWith("LINK:")){
+
+const url = content.replace("LINK:","");
+window.open(url,"_blank");
+
+clickCount = 0;
+return;
+
+}
+
+/* كود HTML */
+frame.srcdoc = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+${content}
+</body>
+</html>
+`;
+frame.style.display = "block";
+
+sectionFrames[id] = frame;
+viewer.appendChild(frame);
+
+clickCount = 0;
+
+},350);
+
+}
+if(clickCount === 3){
+
+clearTimeout(clickTimer);
+clickCount = 0;
+
+btn.classList.add("shake");
+
+setTimeout(()=>{
+btn.classList.remove("shake");
+},300);
+
+pendingEvent = e;
+pendingDoc = doc.id;
+
+pinModal.style.display="flex";
+pinInput.focus();
+
+}
+
+});
+sectionsDiv.appendChild(btn);
+
+});
+
+});
+function closeModal(){
+modal.style.display="none";
+editingId = null;
+
+document.getElementById("name").value="";
+document.getElementById("icon").value="";
+document.getElementById("html").value="";
+}
+
+function closePin(){
+pinModal.style.display="none";
+pinInput.value="";
+pinError.innerText="";
+}
+
+/* DELETE */
+function deleteSection(){
+
+if(!selectedId)return;
+
+db.collection("sections")
+.doc(selectedId)
+.delete();
+
+/* رسالة النجاح */
+showToast("🗑 تم حذف القسم");
+
+contextMenu.classList.add("menuHide");
+
+setTimeout(()=>{
+contextMenu.style.display="none";
+contextMenu.classList.remove("menuHide");
+},200);
+}
+
+
+function toggleSidebar(){
+
+const sidebar = document.querySelector(".sidebar");
+
+sidebar.classList.toggle("collapsed");
+
+}
+/* EDIT */
+function editSection(){
+
+contextMenu.style.display="none";
+editingId = selectedId;
+db.collection("sections")
+.doc(selectedId)
+.get()
+.then(doc=>{
+
+const d=doc.data();
+
+name.value=d.name;
+icon.value=d.icon;
+html.value=d.html;
+
+modal.style.display="flex";
+});
+}
+
+/* CLOSE MENU */
+document.addEventListener("mousedown",(e)=>{
+if(!contextMenu.contains(e.target)){
+contextMenu.style.display="none";
+}
+});
+async function checkPin(){
+
+const entered = pinInput.value;
+
+const sec =
+await db.collection("system")
+.doc("security")
+.get();
+
+const realPin = sec.data().pin;
+
+/* خطأ PIN */
+if(entered !== realPin){
+
+pinError.innerText="❌ رقم سري خطأ";
+
+document
+.querySelector(".pinBox")
+.classList.add("error");
+
+setTimeout(()=>{
+document
+.querySelector(".pinBox")
+.classList.remove("error");
+},300);
+
+return;
+}
+/* نجاح */
+pinModal.style.display="none";
+pinInput.value="";
+pinError.innerText="";
+
+/* لو الهدف إضافة قسم */
+if(pinAction === "add"){
+
+openAdd();
+pinAction = null;
+return;
+
+}
+
+/* تفعيل السحب */
+dragEnabled = true;
+enableDrag();
+
+/* تحديد العنصر */
+selectedId = pendingDoc;
+
+/* احضار الزر */
+const btn =
+document.querySelector(
+`button[data-id="${selectedId}"]`
+);
+
+if(!btn) return;
+
+const rect = btn.getBoundingClientRect();
+
+/* اظهار القائمة */
+contextMenu.style.display="block";
+contextMenu.classList.remove("menuHide");
+
+/* نفس عرض الزر */
+contextMenu.style.width =
+rect.width + "px";
+
+/* مكان افتراضي يمين */
+let left = rect.right + 10;
+let top = rect.top;
+
+/* لو خرجت خارج الشاشة */
+if(left + rect.width > window.innerWidth){
+left = rect.left - rect.width - 10;
+}
+
+/* تثبيت المكان */
+contextMenu.style.left = left + "px";
+contextMenu.style.top = top + "px";
+
+}
+/* =============================
+   DRAG & SORT SECTIONS
+============================= */
+function enableDrag(){
+
+const buttons =
+sectionsDiv.querySelectorAll("button");
+
+buttons.forEach(btn=>{
+
+btn.draggable = true;
+
+/* بداية السحب */
+btn.addEventListener("dragstart",(e)=>{
+
+if(!dragEnabled){
+e.preventDefault();
+return;
+}
+
+isDragging = true;
+btn.classList.add("dragging");
+
+});
+
+/* نهاية السحب */
+btn.addEventListener("dragend",()=>{
+
+isDragging = false;
+btn.classList.remove("dragging");
+
+saveOrder();
+
+});
+
+});
+
+/* التحريك داخل القائمة */
+sectionsDiv.addEventListener("dragover",(e)=>{
+
+if(!dragEnabled) return;
+
+e.preventDefault();
+
+const dragging =
+document.querySelector(".dragging");
+
+if(!dragging) return;
+
+const afterElement =
+getDragAfterElement(
+sectionsDiv,
+e.clientY
+);
+
+if(afterElement == null){
+sectionsDiv.appendChild(dragging);
+}else{
+sectionsDiv.insertBefore(
+dragging,
+afterElement
+);
+}
+
+});
+
+}
+function showToast(text,type="success"){
+
+const toast =
+document.getElementById("toast");
+
+/* تنظيف الالوان القديمة */
+toast.className="";
+
+toast.innerText=text;
+
+/* تحديد اللون */
+if(type==="delete")
+toast.classList.add("toast-delete");
+
+else if(type==="edit")
+toast.classList.add("toast-edit");
+
+else
+toast.classList.add("toast-success");
+
+/* اظهار */
+toast.classList.add("show");
+
+setTimeout(()=>{
+toast.classList.remove("show");
+},2200);
+
+}
+/* تحديد مكان السحب */
+function getDragAfterElement(container,y){
+
+const els=[
+...container.querySelectorAll(
+"button:not(.dragging)"
+)];
+
+return els.reduce((closest,child)=>{
+
+const box=
+child.getBoundingClientRect();
+
+const offset=
+y-box.top-box.height/2;
+
+if(offset<0 &&
+offset>closest.offset){
+
+return{
+offset,
+element:child
+};
+
+}else{
+return closest;
+}
+
+},{
+offset:Number.NEGATIVE_INFINITY
+}).element;
+
+}
+
+/* حماية زر إضافة قسم */
+function requestAddPin(){
+
+pinAction = "add";
+
+pinModal.style.display = "flex";
+pinInput.value="";
+pinError.innerText="";
+pinInput.focus();
+
+}
+/* حفظ الترتيب */
+async function saveOrder(){
+
+const buttons=
+sectionsDiv.querySelectorAll("button");
+
+let index=0;
+
+for(const btn of buttons){
+
+const id =
+btn.getAttribute("data-id");
+
+if(!id) continue;
+
+await db.collection("sections")
+.doc(id)
+.update({
+order:index++
+});
+
+}
+
+}
+function addType(type){
+
+typeModal.style.display="none";
+
+/* كود عادي */
+if(type === "html"){
+
+modal.style.display="flex";
+return;
+
+}
+
+/* رفع ملف */
+if(type === "file"){
+
+const input = document.createElement("input");
+input.type = "file";
+input.accept = ".html";
+
+input.onchange = e => {
+
+const file = e.target.files[0];
+
+if(!file) return;
+
+const reader = new FileReader();
+
+reader.onload = function(){
+
+html.value = reader.result;
+
+modal.style.display="flex";
+
+}
+
+reader.readAsText(file);
+
+};
+
+input.click();
+
+}
+
+/* رابط */
+if(type === "url"){
+
+const url = prompt("ضع رابط الموقع");
+
+if(!url) return;
+
+html.value = `LINK:${url}`;
+
+modal.style.display="flex";
+
+}
+
+}
+/* =========================
+   REAL ONLINE USERS COUNTER
+========================= */
+
+const onlineRef = rtdb.ref("onlineUsers");
+
+/* ID عشوائي */
+const userId =
+"u_" + Math.random().toString(36).substr(2,9);
+
+/* تسجيل الشخص */
+const userStatusRef =
+onlineRef.child(userId);
+
+userStatusRef.set(true);
+
+/* حذف عند الخروج */
+userStatusRef.onDisconnect().remove();
+
+/* تحديث العدد لحظياً */
+onlineRef.on("value", async (snapshot)=>{
+
+const data = snapshot.val();
+
+const count =
+data ? Object.keys(data).length : 0;
+
+/* العدد الحالي */
+document.getElementById(
+"onlineCount"
+).innerText = count;
+
+/* مرجع أعلى عدد */
+const peakRef =
+rtdb.ref("stats/peakOnline");
+
+/* قراءة أعلى رقم محفوظ */
+const peakSnap =
+await peakRef.get();
+
+let peak =
+peakSnap.exists()
+? peakSnap.val()
+: 0;
+
+/* لو العدد الحالي أكبر */
+if(count > peak){
+
+await peakRef.set(count);
+
+peak = count;
+
+}
+
+/* عرض أعلى عدد */
+document.getElementById(
+"peakCount"
+).innerText = peak;
+
+});
+</script>
+<!-- PIN MODAL -->
+<div id="pinModal" class="pinModal">
+
+<div class="pinBox" style="position:relative;">
+
+<button class="closeBtn"
+onclick="closePin()">✕</button>
+
+<h3>🔐Enter the password</h3>
+
+<input id="pinInput"
+type="password"
+maxlength="7"
+placeholder="•••••••">
+
+<button onclick="checkPin()">دخول</button>
+
+<p id="pinError"></p>
+
+</div>
+</div>
+<!-- SELECT TYPE MODAL -->
+
+<div id="typeModal" class="modal">
+
+<div class="box" style="text-align:center">
+
+<h3>اختر نوع القسم</h3>
+
+<button class="save" onclick="addType('html')" style="margin-bottom:10px">
+📄 كود HTML
+</button>
+
+<button class="save" onclick="addType('file')" style="margin-bottom:10px">
+📁 رفع ملف HTML
+</button>
+
+<button class="save" onclick="addType('url')">
+🔗 رابط موقع
+</button>
+
+</div>
+</div>
+</body>
+</html>
